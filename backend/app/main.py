@@ -10,6 +10,6 @@ app = FastAPI(
 def root():
     return {"message": "Vantis API is running"}
 
-@app.get("api/health")
+@app.get("/api/health")
 def checkHealth():
     return {"status": "ok"}
