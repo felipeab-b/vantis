@@ -7,7 +7,7 @@ async def get_host_info(ip: str) -> dict:
     async with httpx.AsyncClient() as client:
         response = await client.get(
             f"{BASE_URL}/shodan/host/{ip}",
-            params={"token": settings.SHODAN_API_KEY}
+            params={"key": settings.SHODAN_API_KEY}
         )
         response.raise_for_status()
         return response.json()    
