@@ -36,7 +36,7 @@ async def search(query: str):
             "breaches": breaches
         }
 
-        ai_analysis = await asyncio.to_thread(analyze_report, report_data)
+        ai_analysis = await analyze_report(report_data)
 
         return {
             "query": query,
