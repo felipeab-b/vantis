@@ -1,0 +1,12 @@
+from fastapi import APIRouter, HTTPException
+from app.services.ipinfo import get_ip_info
+
+router = APIRouter()
+
+@router.get("/search")
+async def search(query: str):
+    try:
+        ip_data = await get_ip_info(query)
+        return {"query": query, "ip_info": ip_data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
