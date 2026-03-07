@@ -5,6 +5,7 @@ from app.services.ipinfo import get_ip_info
 from app.services.shodan import get_host_info
 from app.services.virustotal import get_ip_report
 from app.services.hibp import get_breaches
+from app.services.claude import analyze_report
 
 router = APIRouter()
 
@@ -27,8 +28,19 @@ async def search(query: str):
         vt_data = results[2] if not isinstance(results[2], Exception) else {}
         breaches = results[3] if len(results) > 3 and not isinstance(results[3], Exception) else []
 
+        report_data = {
+            "query": query,
+            "ip_info": ip_data,
+            "shodan": shodan_data,
+            "virustotal": vt_data,
+            "breaches": breaches
+        }
+
+        ai_analysis = await asyncio.to_thread(analyze_report, report_data)
+
         return {
             "query": query,
+            "ai_analysis": ai_analysis,
             "ip_info": ip_data,
             "shodan": shodan_data,
             "virustotal": vt_data,
