@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.db.mongo import connect_db, close_db
+from app.api.routes.search import router as search_router
 
 app = FastAPI(
     title="Vantis API",
@@ -14,6 +15,8 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await close_db()
+
+app.include_router(search_router, prefix="/api")
 
 @app.get("/")
 def root():
