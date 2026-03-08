@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.config import settings
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 client: AsyncIOMotorClient = None
 db = None
@@ -25,7 +25,7 @@ async def get_cached_report(query: str) -> dict | None:
     doc = await collection.find_one({"query": query})
     if not doc:
         return None
-    age = datetime.now(datetime.timezone.utc) - doc["cached_at"]
+    age = datetime.now(timezone.utc) - doc["cached_at"]
     if age > timedelta(hours=24):
         await collection.delete_one({"query": query})
         return None
@@ -38,7 +38,7 @@ async def save_report(query: str, data: dict):
         {
             "query": query,
             "data": data,
-            "cached_at": datetime.now(datetime.timezone.utc)
+            "cached_at": datetime.now(timezone.utc)
         },
         upsert=True
     )
