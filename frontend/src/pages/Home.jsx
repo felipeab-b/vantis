@@ -9,7 +9,7 @@ const SOURCES = [
     { name: "HIBP", desc: "Breach detection" },
 ]
 
-export default function Home({ onSearch, loading }) {
+export default function Home({ onSearch, loading, error }) {
     const [query, setQuery] = useState("")
 
     function handleSubmit() {
@@ -88,6 +88,11 @@ export default function Home({ onSearch, loading }) {
           ))}
         </div>
       </div>
+      {error && (
+        <div style={styles.error}>
+          ⚠ {error}
+        </div>
+      )}
     </div>
   )
 }
@@ -251,5 +256,16 @@ const styles = {
         fontSize: "11px",
         color: "var(--text-muted)",
         marginTop: "2px",
+    },
+    error: {
+      fontFamily: "var(--font-mono)",
+      fontSize: "13px",
+      color: "var(--danger)",
+      background: "rgba(248, 81, 73, 0.08)",
+      border: "1px solid rgba(248, 81, 73, 0.2)",
+      borderRadius: "6px",
+      padding: "12px 16px",
+      width: "100%",
+      textAlign: "center",
     },
 }
