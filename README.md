@@ -29,8 +29,8 @@ understand their digital exposure.
 
 ## Screenshots
 
-![Home](docs/home.png)
-![Report](docs/report.png)
+![Home](zdocs/home.png)
+![Report](zdocs/report.png)
 
 ## Architecture
 
