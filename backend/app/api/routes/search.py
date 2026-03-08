@@ -6,12 +6,18 @@ from app.services.shodan import get_host_info
 from app.services.virustotal import get_ip_report
 from app.services.hibp import get_breaches
 from app.services.claude import analyze_report
+from app.db.mongo import get_cached_report, save_report
 
 router = APIRouter()
 
 @router.get("/search")
 async def search(query: str):
     try:
+        cached = await get_cached_report(query)
+        if cached:
+            print(f"Cache hit for {query}")
+            return cached
+
         tasks = [
             get_ip_info(query),
             get_host_info(query),
@@ -29,7 +35,6 @@ async def search(query: str):
         breaches = results[3] if len(results) > 3 and not isinstance(results[3], Exception) else []
 
         report_data = {
-            "query": query,
             "ip_info": ip_data,
             "shodan": shodan_data,
             "virustotal": vt_data,
@@ -38,7 +43,7 @@ async def search(query: str):
 
         ai_analysis = await analyze_report(report_data)
 
-        return {
+        result = {
             "query": query,
             "ai_analysis": ai_analysis,
             "ip_info": ip_data,
@@ -46,5 +51,10 @@ async def search(query: str):
             "virustotal": vt_data,
             "breaches": breaches
         }
+
+        await save_report(query, result)
+
+        return result
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
