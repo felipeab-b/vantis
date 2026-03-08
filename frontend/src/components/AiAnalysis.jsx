@@ -1,3 +1,5 @@
+import ReactMarkdown from "react-markdown"
+
 export default function AiAnalysis({ text }) {
   if (!text) return null
 
@@ -8,7 +10,7 @@ export default function AiAnalysis({ text }) {
         <span style={styles.label}>AI Analysis</span>
       </div>
       <div style={styles.text}>
-        {text}
+        <ReactMarkdown>{text}</ReactMarkdown>
       </div>
     </div>
   )
@@ -44,6 +46,5 @@ const styles = {
     fontSize: "13px",
     lineHeight: 1.8,
     color: "var(--text-secondary)",
-    whiteSpace: "pre-wrap",
   },
 }
