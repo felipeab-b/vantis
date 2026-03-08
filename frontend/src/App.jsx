@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Report from "./pages/Report";
+import Home from "./pages/Home";
 
 export default function App() {
   const [page, setPage] = useState("home");
