@@ -33,12 +33,24 @@ async def get_cached_report(query: str) -> dict | None:
 
 async def save_report(query: str, data: dict):
     collection = db["reports"]
+    clean_data = sanitize(data)
     await collection.replace_one(
         {"query": query},
         {
             "query": query,
-            "data": data,
+            "data": clean_data,
             "cached_at": datetime.now(timezone.utc)
         },
         upsert=True
     )
+
+def sanitize(obj):
+    if isinstance(obj, dict):
+        return {k: sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize(i) for i in obj]
+    if isinstance(obj, float) and (obj > 2**53 or obj < -(2**53)):
+        return str(obj)
+    if isinstance(obj, int) and (obj > 2**63 - 1 or obj < -(2**63)):
+        return str(obj)
+    return obj
